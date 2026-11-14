@@ -1,0 +1,1422 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تيار الحكمة - ملف الشباب والرياضة | لوحة المتابعة المركزية</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Cairo Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+        .white-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .tab-btn {
+            transition: all 0.25s ease;
+        }
+        .tab-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        .tab-btn:not(.active):hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* ========================================================
+           تنسيق الطباعة الإلزامي: ورقة A4 بالعرض (Landscape)
+           وعرض كافة البيانات والأعمدة بدون قص
+           ======================================================== */
+        @page {
+            size: A4 landscape;
+            margin: 8mm 6mm 8mm 6mm;
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            html, body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                font-size: 10px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+            
+            /* إخفاء عناصر التحكم والأزرار غير المخصصة للطباعة */
+            header, .no-print, .tab-nav, #search-filter-section, button, .action-btns, #toast, #editModal, #imageLightbox, .modal-backdrop {
+                display: none !important;
+            }
+
+            /* إظهار ترويسة وتذييل الطباعة الرسمية */
+            #printOfficialHeader {
+                display: block !important;
+            }
+            #printOfficialFooter {
+                display: flex !important;
+            }
+
+            #dashboardMainWrapper {
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+
+            #section-table {
+                display: block !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .white-card {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: transparent !important;
+            }
+
+            .overflow-x-auto {
+                overflow: visible !important;
+            }
+
+            /* ضبط الجدول بالكامل على مقاس A4 بالعرض */
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                font-size: 10px !important;
+                table-layout: fixed !important;
+            }
+
+            th, td {
+                border: 1px solid #475569 !important;
+                padding: 5px 4px !important;
+                vertical-align: middle !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                white-space: normal !important;
+            }
+
+            thead tr th {
+                background-color: #f1f5f9 !important;
+                color: #0f172a !important;
+                font-weight: 800 !important;
+                text-align: center !important;
+                font-size: 10.5px !important;
+                border: 1px solid #334155 !important;
+            }
+
+            /* إخفاء عمود الإجراءات (الأزرار) */
+            th.action-col, td.action-col {
+                display: none !important;
+            }
+
+            /* نصوص المستمسكات في الطباعة */
+            .print-doc-badge {
+                display: inline-block !important;
+                border: 1px solid #94a3b8 !important;
+                padding: 1px 3px !important;
+                border-radius: 4px !important;
+                font-size: 8.5px !important;
+                font-weight: bold !important;
+            }
+
+            /* نمط طباعة بطاقة الموظف الفردية */
+            body.print-individual-mode #section-table,
+            body.print-individual-mode #printOfficialHeader,
+            body.print-individual-mode #printOfficialFooter {
+                display: none !important;
+            }
+            body.print-individual-mode #viewModal {
+                display: block !important;
+                position: static !important;
+                background: transparent !important;
+                padding: 0 !important;
+            }
+            body.print-individual-mode #viewModal > div {
+                max-width: 100% !important;
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+        }
+    </style>
+</head>
+<body class="p-3 sm:p-6 min-h-screen">
+
+    <!-- ترويسة الطباعة الرسمية (تظهر فقط عند الطباعة أو الحفظ كـ PDF) -->
+    <div id="printOfficialHeader" class="hidden pb-3 mb-3 border-b-2 border-slate-800">
+        <div class="flex items-center justify-between">
+            <div class="text-right">
+                <h2 class="text-base font-black text-slate-900">تيار الحكمة الوطني</h2>
+                <h3 class="text-sm font-bold text-blue-900">ملف الشباب والرياضة</h3>
+                <p class="text-[11px] text-slate-600 font-medium">سجل حصر وتحديث بيانات الموظفين والكوادر</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-12 h-12 rounded-xl bg-blue-900 text-amber-300 flex items-center justify-center text-xl mx-auto mb-1 border border-blue-700 shadow-sm">
+                    <i class="fa-solid fa-users-line"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-700">لوحة الإدارة المركزية</span>
+            </div>
+
+            <div class="text-left text-[11px] space-y-0.5">
+                <p><span class="text-slate-500 font-medium">تاريخ الطباعة:</span> <b id="printDate" class="font-mono text-slate-800"></b></p>
+                <p><span class="text-slate-500 font-medium">إجمالي الموظفين:</span> <b id="printTotalRecords" class="font-bold text-blue-800"></b></p>
+                <p><span class="text-slate-500 font-medium">المكتملين (3/3):</span> <b id="printCompleteRecords" class="font-bold text-emerald-800"></b></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- غلاف لوحة المتابعة الكاملة -->
+    <div id="dashboardMainWrapper">
+
+        <!-- Top Navigation & Header -->
+        <header class="white-card p-5 mb-6">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                
+                <!-- Branding -->
+                <div class="flex items-center gap-3.5">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-900 to-blue-700 text-amber-300 flex items-center justify-center text-2xl shadow-md border border-blue-500/30">
+                        <i class="fa-solid fa-users-line"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
+                                تيار الحكمة الوطني
+                            </span>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 border border-blue-200">
+                                لوحة المتابعة المركزية
+                            </span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">
+                            ملف الشباب والرياضة
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Badges and Live Status (الرابط مخفي تماماً) -->
+                <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+                    
+                    <!-- Live Clock -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 flex items-center gap-2 shadow-sm">
+                        <i class="fa-regular fa-clock text-blue-600"></i>
+                        <span id="live-clock">--:--:--</span>
+                    </div>
+
+                    <!-- Database Sync Badge -->
+                    <div id="sync-badge" class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-all">
+                        <i class="fa-solid fa-circle text-emerald-500 text-[10px] animate-pulse"></i>
+                        <span>متصل بالسحابة مباشرة</span>
+                    </div>
+
+                    <!-- External Form Link -->
+                    <a href="form.html" target="_blank" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>فتح استمارة التسجيل</span>
+                    </a>
+
+                    <!-- Quick Add Modal Trigger -->
+                    <button onclick="openAddModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>إضافة سريعة</span>
+                    </button>
+
+                    <!-- Refresh Button -->
+                    <button onclick="listenToRealtimeChanges()" title="تحديث البيانات فوراً" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span>تحديث</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Quick Summary Metrics Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-slate-100 text-center">
+                
+                <div class="bg-blue-50/60 border border-blue-100 rounded-2xl p-3">
+                    <span class="text-xs text-blue-600 font-bold block mb-0.5">إجمالي المسجلين</span>
+                    <span class="text-2xl font-black text-blue-900" id="metric-total">0</span>
+                </div>
+
+                <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-3">
+                    <span class="text-xs text-emerald-600 font-bold block mb-0.5">مكتملي المستمسكات (3/3)</span>
+                    <span class="text-2xl font-black text-emerald-900" id="metric-completed">0</span>
+                </div>
+
+                <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-3">
+                    <span class="text-xs text-amber-600 font-bold block mb-0.5">مستمسكات ناقصة</span>
+                    <span class="text-2xl font-black text-amber-900" id="metric-incomplete">0</span>
+                </div>
+
+                <div class="bg-purple-50/60 border border-purple-100 rounded-2xl p-3">
+                    <span class="text-xs text-purple-600 font-bold block mb-0.5">حملة الشهادات العليا</span>
+                    <span class="text-2xl font-black text-purple-900" id="metric-higher-edu">0</span>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- Main Navigation Tabs -->
+        <div class="flex gap-2 mb-5 bg-white p-1.5 rounded-2xl border border-slate-200 tab-nav shadow-sm max-w-xl">
+            <button onclick="switchTab('table')" id="tab-table" class="tab-btn active flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2">
+                <i class="fa-solid fa-table-list"></i>
+                <span>سجل الموظفين والبيانات</span>
+            </button>
+            <button onclick="switchTab('stats')" id="tab-stats" class="tab-btn flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 text-slate-600">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>الإحصائيات والتحليلات</span>
+            </button>
+        </div>
+
+        <!-- Section 1: Data Table View -->
+        <div id="section-table" class="space-y-4">
+            
+            <!-- Search and Action Bar -->
+            <div id="search-filter-section" class="white-card p-4 sm:p-5">
+                <div class="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+                    
+                    <!-- Search Box -->
+                    <div class="relative flex-grow max-w-lg">
+                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3.5 text-slate-400"></i>
+                        <input type="text" id="searchInput" onkeyup="applyFilters()" placeholder="ابحث بالاسم، اللقب، الهاتف، مكان العمل، السكن..."
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl pr-10 pl-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition-all shadow-inner">
+                    </div>
+
+                    <!-- Dropdown Filters -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        
+                        <!-- Qualification Filter -->
+                        <select id="filterQualification" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-blue-500">
+                            <option value="">جميع المؤهلات الدراسية</option>
+                            <option value="دكتوراه">دكتوراه</option>
+                            <option value="ماجستير">ماجستير</option>
+                            <option value="دبلوم عالي">دبلوم عالي</option>
+                            <option value="بكالوريوس">بكالوريوس</option>
+                            <option value="دبلوم">دبلوم</option>
+                            <option value="إعدادية">إعدادية</option>
+                            <option value="متوسطة">متوسطة</option>
+                            <option value="ابتدائية">ابتدائية</option>
+                            <option value="يقرأ ويكتب">يقرأ ويكتب</option>
+                        </select>
+
+                        <!-- Job Grade Filter -->
+                        <select id="filterGrade" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-blue-500">
+                            <option value="">جميع الدرجات الوظيفية</option>
+                            <option value="الدرجة الأولى">الدرجة الأولى</option>
+                            <option value="الدرجة الثانية">الدرجة الثانية</option>
+                            <option value="الدرجة الثالثة">الدرجة الثالثة</option>
+                            <option value="الدرجة الرابعة">الدرجة الرابعة</option>
+                            <option value="الدرجة الخامسة">الدرجة الخامسة</option>
+                            <option value="الدرجة السادسة">الدرجة السادسة</option>
+                            <option value="الدرجة السابعة">الدرجة السابعة</option>
+                            <option value="الدرجة الثامنة">الدرجة الثامنة</option>
+                            <option value="الدرجة التاسعة">الدرجة التاسعة</option>
+                            <option value="الدرجة العاشرة">الدرجة العاشرة</option>
+                            <option value="عقد">عقود وزارية</option>
+                            <option value="أجر يومي">أجر يومي</option>
+                            <option value="غير موظف">غير موظف / كاسب</option>
+                        </select>
+
+                        <!-- Attachments Status Filter -->
+                        <select id="filterDocs" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-blue-500">
+                            <option value="">حالة المستمسكات (الكل)</option>
+                            <option value="complete">مكتمل المستمسكات (3/3)</option>
+                            <option value="incomplete">ناقص مستمسكات</option>
+                        </select>
+
+                        <!-- Export Excel -->
+                        <button onclick="exportToExcel()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm">
+                            <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                            <span>تصدير Excel</span>
+                        </button>
+
+                        <!-- Print Table Button -->
+                        <button onclick="printTableLandscape()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-blue-500/20">
+                            <i class="fa-solid fa-print"></i>
+                            <span>طباعة</span>
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="white-card overflow-hidden">
+                <div class="overflow-x-auto custom-scroll">
+                    <table id="mainPrintableTable" class="w-full text-right text-sm">
+                        <thead>
+                            <tr class="bg-slate-50/80 text-slate-700 font-bold border-b border-slate-200 text-xs">
+                                <th style="width: 35px;" class="text-center">ت</th>
+                                <th style="width: 20%;">الاسم الثلاثي واللقب</th>
+                                <th style="width: 12%;" class="text-center">رقم الهاتف</th>
+                                <th style="width: 7%;" class="text-center">التولد</th>
+                                <th style="width: 17%;">السكن</th>
+                                <th style="width: 11%;" class="text-center">التحصيل الدراسي</th>
+                                <th style="width: 15%;">مكان العمل</th>
+                                <th style="width: 10%;" class="text-center">الدرجة الوظيفية</th>
+                                <th style="width: 8%;" class="text-center">المستمسكات</th>
+                                <th style="width: 80px;" class="text-center action-col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="10" class="text-center py-10 text-slate-400">
+                                    <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-blue-500 block"></i>
+                                    جاري تحميل البيانات من السحابة...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="noDataMessage" class="hidden text-center py-12 px-4">
+                    <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <h4 class="text-base font-bold text-slate-700 mb-1">لا توجد بيانات مسجلة</h4>
+                    <p class="text-xs text-slate-400">لم يتم العثور على أي موظف يطابق معايير البحث أو لم يتم تسجيل أي بيانات بعد.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section 2: Statistics & Charts View -->
+        <div id="section-stats" class="hidden space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                
+                <!-- Qualifications Distribution -->
+                <div class="white-card p-5">
+                    <div class="flex items-center gap-2.5 mb-4 pb-2 border-b border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">توزيع التحصيل الدراسي</h3>
+                    </div>
+                    <div id="statsQualifications" class="space-y-3">
+                        <!-- Progress bars injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Job Grades Distribution -->
+                <div class="white-card p-5">
+                    <div class="flex items-center gap-2.5 mb-4 pb-2 border-b border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">توزيع الدرجات الوظيفية</h3>
+                    </div>
+                    <div id="statsGrades" class="space-y-3 max-h-80 overflow-y-auto custom-scroll pr-1">
+                        <!-- Progress bars injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Attachments Completion -->
+                <div class="white-card p-5">
+                    <div class="flex items-center gap-2.5 mb-4 pb-2 border-b border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">موقف المستمسكات الثبوتية</h3>
+                    </div>
+                    <div id="statsDocs" class="space-y-4">
+                        <!-- Progress bars injected by JS -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- تذييل الطباعة الرسمي للتواقيع (يظهر فقط في الطباعة) -->
+        <div id="printOfficialFooter" class="hidden justify-between items-end pt-8 mt-6 border-t border-slate-400 text-[11px] font-bold text-slate-800">
+            <div class="text-center w-52">
+                <p class="mb-12">&nbsp;</p>
+                <p class="border-t border-dashed border-slate-400 pt-1">&nbsp;</p>
+            </div>
+            <div class="text-center w-52">
+                <p class="mb-12">&nbsp;</p>
+                <p class="border-t border-dashed border-slate-400 pt-1">&nbsp;</p>
+            </div>
+            <div class="text-center w-52">
+                <p class="mb-12">&nbsp;</p>
+                <p class="border-t border-dashed border-slate-400 pt-1">&nbsp;</p>
+            </div>
+        </div>
+
+        <!-- Modal: View Employee Details & Attachments (معاينة البطاقة والمستمسكات) -->
+        <div id="viewModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+            <div class="relative bg-white rounded-3xl w-full max-w-3xl max-h-[92vh] overflow-y-auto custom-scroll shadow-2xl border border-slate-100">
+                
+                <!-- Modal Header -->
+                <div class="sticky top-0 z-20 bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-5 flex items-center justify-between rounded-t-3xl">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-300 text-lg border border-white/20">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-base sm:text-lg" id="modalEmployeeName">بطاقة الموظف</h3>
+                            <p class="text-blue-200 text-xs">تيار الحكمة الوطني - ملف الشباب والرياضة</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="printCurrentEmployee()" class="bg-white/15 hover:bg-white/25 text-white p-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
+                            <i class="fa-solid fa-print"></i>
+                            <span>طباعة البطاقة</span>
+                        </button>
+                        <button onclick="closeViewModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-all">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6 space-y-6" id="modalPrintArea">
+                    
+                    <!-- Info Cards Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2 text-xs">
+                            <h4 class="font-bold text-blue-700 text-sm mb-3 flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                                <i class="fa-solid fa-user"></i> البيانات الشخصية
+                            </h4>
+                            <div class="flex justify-between py-1 border-b border-slate-100">
+                                <span class="text-slate-400 font-medium">الاسم واللقب:</span>
+                                <span class="font-bold text-slate-800 text-sm" id="detailFullName"></span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100">
+                                <span class="text-slate-400 font-medium">رقم الهاتف:</span>
+                                <span class="font-bold text-blue-700 font-mono text-sm" id="detailPhone"></span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100">
+                                <span class="text-slate-400 font-medium">التولد / الميلاد:</span>
+                                <span class="font-bold text-slate-800" id="detailBirthDate"></span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-slate-400 font-medium">محل السكن:</span>
+                                <span class="font-bold text-slate-800" id="detailResidence"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2 text-xs">
+                            <h4 class="font-bold text-emerald-700 text-sm mb-3 flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                                <i class="fa-solid fa-briefcase"></i> البيانات الوظيفية والدراسية
+                            </h4>
+                            <div class="flex justify-between py-1 border-b border-slate-100">
+                                <span class="text-slate-400 font-medium">التحصيل الدراسي:</span>
+                                <span class="font-bold text-emerald-700 text-sm" id="detailQualification"></span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100">
+                                <span class="text-slate-400 font-medium">مكان العمل:</span>
+                                <span class="font-bold text-slate-800" id="detailWorkplace"></span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100">
+                                <span class="text-slate-400 font-medium">الدرجة الوظيفية / الصفة:</span>
+                                <span class="font-bold text-purple-700" id="detailJobGrade"></span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-slate-400 font-medium">تاريخ التسجيل:</span>
+                                <span class="font-semibold text-slate-500 font-mono" id="detailCreatedAt"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Notes if any -->
+                    <div id="notesContainer" class="hidden bg-amber-50/70 border border-amber-200 rounded-2xl p-4 text-xs">
+                        <span class="font-bold text-amber-800 block mb-1">ملاحظات:</span>
+                        <p class="text-slate-700 font-medium" id="detailNotes"></p>
+                    </div>
+
+                    <!-- Attachments Gallery (موحدة + سكن + بطاقة ناخب) -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-paperclip text-blue-600"></i>
+                            المستمسكات الثبوتية المرفقة (موحدة + سكن + بطاقة ناخب)
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="modalAttachmentsGrid">
+                            <!-- Attachment cards rendered here -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Modal: Edit Employee (تعديل بيانات) -->
+        <div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+            <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-y-auto custom-scroll shadow-2xl border border-slate-100 p-6 sm:p-8">
+                <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-200">
+                    <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-user-pen text-blue-600"></i>
+                        تعديل بيانات الموظف
+                    </h3>
+                    <button onclick="closeEditModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form id="editEmployeeForm" class="space-y-4" onsubmit="saveEditedEmployee(event)">
+                    <input type="hidden" id="editEmpId">
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1 text-xs">الاسم الثلاثي واللقب</label>
+                        <input type="text" id="editFullName" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1 text-xs">رقم الهاتف</label>
+                            <input type="tel" id="editPhone" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 font-mono text-right">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1 text-xs">التولد</label>
+                            <input type="text" id="editBirthDate" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1 text-xs">السكن</label>
+                        <input type="text" id="editResidence" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1 text-xs">التحصيل الدراسي</label>
+                            <select id="editQualification" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold bg-white focus:outline-none focus:border-blue-500">
+                                <option value="دكتوراه">دكتوراه</option>
+                                <option value="ماجستير">ماجستير</option>
+                                <option value="دبلوم عالي">دبلوم عالي</option>
+                                <option value="بكالوريوس">بكالوريوس</option>
+                                <option value="دبلوم">دبلوم</option>
+                                <option value="إعدادية">إعدادية</option>
+                                <option value="متوسطة">متوسطة</option>
+                                <option value="ابتدائية">ابتدائية</option>
+                                <option value="يقرأ ويكتب">يقرأ ويكتب</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1 text-xs">الدرجة الوظيفية</label>
+                            <select id="editJobGrade" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold bg-white focus:outline-none focus:border-blue-500">
+                                <option value="الدرجة الأولى">الدرجة الأولى</option>
+                                <option value="الدرجة الثانية">الدرجة الثانية</option>
+                                <option value="الدرجة الثالثة">الدرجة الثالثة</option>
+                                <option value="الدرجة الرابعة">الدرجة الرابعة</option>
+                                <option value="الدرجة الخامسة">الدرجة الخامسة</option>
+                                <option value="الدرجة السادسة">الدرجة السادسة</option>
+                                <option value="الدرجة السابعة">الدرجة السابعة</option>
+                                <option value="الدرجة الثامنة">الدرجة الثامنة</option>
+                                <option value="الدرجة التاسعة">الدرجة التاسعة</option>
+                                <option value="الدرجة العاشرة">الدرجة العاشرة</option>
+                                <option value="عقد وزاري / قرار 315">عقد وزاري / قرار 315</option>
+                                <option value="أجر يومي">أجر يومي</option>
+                                <option value="قطاع خاص">قطاع خاص</option>
+                                <option value="كاسب / غير موظف">كاسب / غير موظف</option>
+                                <option value="طالب">طالب</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1 text-xs">مكان العمل</label>
+                        <input type="text" id="editWorkplace" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 font-bold mb-1 text-xs">ملاحظات</label>
+                        <textarea id="editNotes" rows="2" class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500"></textarea>
+                    </div>
+
+                    <div class="flex gap-3 pt-3">
+                        <button type="submit" id="saveEditBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md">
+                            حفظ التعديلات
+                        </button>
+                        <button type="button" onclick="closeEditModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-6 rounded-xl text-sm transition-all">
+                            إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Image Zoom Lightbox -->
+        <div id="imageLightbox" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md" onclick="closeLightbox()">
+            <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
+                <button onclick="closeLightbox()" class="absolute -top-12 left-0 text-white text-xl bg-white/20 hover:bg-white/30 rounded-full w-10 h-10 flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+                <img id="lightboxImg" src="" alt="مستمسك" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl border border-white/20">
+                <p id="lightboxCaption" class="text-white text-xs font-bold mt-3 text-center"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[110] bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg">تمت العملية بنجاح!</span>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // رابط قاعدة البيانات داخلي ومخفي تماماً عن الواجهات
+        const RTDB_URL = "https://empoleeinformation-default-rtdb.firebaseio.com";
+
+        let allEmployees = [];
+        let filteredEmployees = [];
+        let currentViewingEmp = null;
+        let firebaseDb = null;
+
+        // ============================================
+        // تهيئة Firebase والمزامنة الفورية
+        // ============================================
+        function initFirebase() {
+            try {
+                if (firebase.apps.length > 0) {
+                    firebase.app().delete();
+                }
+                firebase.initializeApp({
+                    databaseURL: RTDB_URL,
+                    projectId: "empoleeinformation"
+                });
+                firebaseDb = firebase.database();
+                listenToRealtimeChanges();
+            } catch (e) {
+                console.warn("Firebase SDK init fallback:", e);
+                fetchEmployeesViaRest();
+            }
+        }
+
+        // الاستماع للتحديثات الحية من السحابة
+        function listenToRealtimeChanges() {
+            const syncBadge = document.getElementById('sync-badge');
+            syncBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600"></i><span>جاري المزامنة...</span>';
+            syncBadge.className = 'bg-blue-50 border border-blue-200 text-blue-800 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm';
+
+            if (firebaseDb) {
+                firebaseDb.ref('employees').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    const list = [];
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            list.push({ ...data[key], id: data[key].id || key });
+                        });
+                    }
+                    // ترتيب الأحدث أولاً
+                    list.sort((a, b) => (b.createdTimestamp || 0) - (a.createdTimestamp || 0));
+
+                    allEmployees = list;
+                    saveToLocalStorage(list);
+                    updateDashboardUI();
+
+                    syncBadge.innerHTML = '<i class="fa-solid fa-circle text-emerald-500 text-[10px] animate-pulse"></i><span>متصل بالسحابة مباشرة</span>';
+                    syncBadge.className = 'bg-emerald-50 border border-emerald-200 text-emerald-800 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm';
+                }, (error) => {
+                    console.error("Firebase listen error:", error);
+                    fetchEmployeesViaRest();
+                });
+            } else {
+                fetchEmployeesViaRest();
+            }
+        }
+
+        // جلب البيانات عبر REST API
+        async function fetchEmployeesViaRest() {
+            const syncBadge = document.getElementById('sync-badge');
+            try {
+                const resp = await fetch(`${RTDB_URL}/employees.json`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    const list = [];
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            if (data[key]) list.push({ ...data[key], id: data[key].id || key });
+                        });
+                    }
+                    list.sort((a, b) => (b.createdTimestamp || 0) - (a.createdTimestamp || 0));
+                    allEmployees = list;
+                    saveToLocalStorage(list);
+                    updateDashboardUI();
+
+                    syncBadge.innerHTML = '<i class="fa-solid fa-circle text-emerald-500 text-[10px]"></i><span>متصل بالسحابة</span>';
+                    syncBadge.className = 'bg-emerald-50 border border-emerald-200 text-emerald-800 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm';
+                    return;
+                }
+            } catch (err) {
+                console.error("REST fetch error:", err);
+            }
+
+            // استخدام النسخة الاحتياطية المحلية
+            const local = JSON.parse(localStorage.getItem('alhikma_youth_employees') || '[]');
+            allEmployees = local;
+            updateDashboardUI();
+
+            syncBadge.innerHTML = '<i class="fa-solid fa-circle-check text-slate-500 text-xs"></i><span>الوضع المحلي</span>';
+            syncBadge.className = 'bg-slate-100 border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm';
+        }
+
+        function saveToLocalStorage(list) {
+            try {
+                localStorage.setItem('alhikma_youth_employees', JSON.stringify(list));
+            } catch (e) {}
+        }
+
+        // تحديث كل واجهات اللوحة
+        function updateDashboardUI() {
+            applyFilters();
+            renderMetrics();
+            renderStatistics();
+        }
+
+        // تحديث الإحصائيات في الشريط العلوي
+        function renderMetrics() {
+            const total = allEmployees.length;
+            let completed = 0;
+            let higherEdu = 0;
+
+            allEmployees.forEach(e => {
+                const dCount = (e.attachments?.nationalId ? 1 : 0) +
+                               (e.attachments?.residenceCard ? 1 : 0) +
+                               (e.attachments?.voterCard ? 1 : 0);
+                if (dCount === 3) completed++;
+                if (['دكتوراه', 'ماجستير', 'دبلوم عالي'].includes(e.qualification)) higherEdu++;
+            });
+
+            document.getElementById('metric-total').innerText = total;
+            document.getElementById('metric-completed').innerText = completed;
+            document.getElementById('metric-incomplete').innerText = total - completed;
+            document.getElementById('metric-higher-edu').innerText = higherEdu;
+        }
+
+        // تطبيق الفلاتر والبحث
+        function applyFilters() {
+            const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+            const filterQual = document.getElementById('filterQualification').value;
+            const filterGrd = document.getElementById('filterGrade').value;
+            const filterDocs = document.getElementById('filterDocs').value;
+
+            filteredEmployees = allEmployees.filter(emp => {
+                const nameMatch = !query || 
+                    (emp.fullName && emp.fullName.toLowerCase().includes(query)) ||
+                    (emp.phone && emp.phone.includes(query)) ||
+                    (emp.workplace && emp.workplace.toLowerCase().includes(query)) ||
+                    (emp.residence && emp.residence.toLowerCase().includes(query)) ||
+                    (emp.jobGrade && emp.jobGrade.toLowerCase().includes(query)) ||
+                    (emp.qualification && emp.qualification.toLowerCase().includes(query));
+
+                const qualMatch = !filterQual || emp.qualification === filterQual;
+                
+                let gradeMatch = true;
+                if (filterGrd) {
+                    if (filterGrd === 'عقد') gradeMatch = (emp.jobGrade || '').includes('عقد');
+                    else if (filterGrd === 'أجر يومي') gradeMatch = (emp.jobGrade || '').includes('أجر');
+                    else if (filterGrd === 'غير موظف') gradeMatch = (emp.jobGrade || '').includes('غير موظف') || (emp.jobGrade || '').includes('كاسب');
+                    else gradeMatch = emp.jobGrade === filterGrd;
+                }
+
+                let docsMatch = true;
+                const dCount = (emp.attachments?.nationalId ? 1 : 0) +
+                               (emp.attachments?.residenceCard ? 1 : 0) +
+                               (emp.attachments?.voterCard ? 1 : 0);
+                if (filterDocs === 'complete') docsMatch = dCount === 3;
+                if (filterDocs === 'incomplete') docsMatch = dCount < 3;
+
+                return nameMatch && qualMatch && gradeMatch && docsMatch;
+            });
+
+            renderTable(filteredEmployees);
+        }
+
+        // رسم جدول الموظفين (مع مراعاة التوزيع العريض للطباعة)
+        function renderTable(list) {
+            const tbody = document.getElementById('employeeTableBody');
+            const noData = document.getElementById('noDataMessage');
+
+            if (!list || list.length === 0) {
+                tbody.innerHTML = '';
+                noData.classList.remove('hidden');
+                return;
+            }
+            noData.classList.add('hidden');
+
+            let html = '';
+            list.forEach((emp, index) => {
+                const hasNational = !!emp.attachments?.nationalId;
+                const hasResidence = !!emp.attachments?.residenceCard;
+                const hasVoter = !!emp.attachments?.voterCard;
+                const totalDocs = (hasNational ? 1 : 0) + (hasResidence ? 1 : 0) + (hasVoter ? 1 : 0);
+
+                html += `
+                    <tr class="hover:bg-blue-50/40 transition-colors">
+                        <td class="text-center font-bold text-slate-500 text-xs">${index + 1}</td>
+                        <td class="font-bold text-slate-900 text-xs">
+                            <span class="hover:text-blue-700 cursor-pointer" onclick="openViewModal('${emp.id}')">${emp.fullName || '-'}</span>
+                        </td>
+                        <td class="text-center text-xs font-mono font-bold text-slate-700" dir="ltr">
+                            <a href="tel:${emp.phone}" class="hover:text-blue-600 inline-flex items-center gap-1">
+                                <i class="fa-solid fa-phone text-[9px] text-slate-400 no-print"></i>
+                                ${emp.phone || '-'}
+                            </a>
+                        </td>
+                        <td class="text-center text-xs font-semibold text-slate-700">${emp.birthDate || '-'}</td>
+                        <td class="text-xs text-slate-700">${emp.residence || '-'}</td>
+                        <td class="text-center text-xs">
+                            <span class="px-2 py-0.5 rounded font-bold ${getQualificationBadge(emp.qualification)}">
+                                ${emp.qualification || '-'}
+                            </span>
+                        </td>
+                        <td class="text-xs font-semibold text-slate-800">${emp.workplace || '-'}</td>
+                        <td class="text-center text-xs font-bold text-slate-700">
+                            ${emp.jobGrade || '-'}
+                        </td>
+                        <td class="text-center">
+                            <!-- شارات الشاشة -->
+                            <div class="no-print inline-flex items-center gap-0.5 text-[10px] font-bold">
+                                <span title="البطاقة الموحدة" class="w-5 h-5 rounded flex items-center justify-center ${hasNational ? 'bg-blue-100 text-blue-700 font-black' : 'bg-slate-100 text-slate-300'}">
+                                    <i class="fa-solid fa-id-card"></i>
+                                </span>
+                                <span title="بطاقة السكن" class="w-5 h-5 rounded flex items-center justify-center ${hasResidence ? 'bg-emerald-100 text-emerald-700 font-black' : 'bg-slate-100 text-slate-300'}">
+                                    <i class="fa-solid fa-house"></i>
+                                </span>
+                                <span title="بطاقة الناخب" class="w-5 h-5 rounded flex items-center justify-center ${hasVoter ? 'bg-purple-100 text-purple-700 font-black' : 'bg-slate-100 text-slate-300'}">
+                                    <i class="fa-solid fa-check-to-slot"></i>
+                                </span>
+                            </div>
+                            <!-- نصوص الطباعة الرسمية على A4 -->
+                            <div class="hidden print:block text-[9px] font-bold">
+                                ${totalDocs === 3 ? '<span class="text-emerald-800">مكتمل (3/3)</span>' : `<span class="text-slate-600">(${totalDocs}/3)</span>`}
+                            </div>
+                        </td>
+                        <td class="text-center action-col">
+                            <div class="flex items-center justify-center gap-1">
+                                <button onclick="openViewModal('${emp.id}')" title="معاينة كاملة" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-all text-xs">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button onclick="openEditModal('${emp.id}')" title="تعديل" class="p-1.5 text-amber-600 hover:bg-amber-100 rounded-lg transition-all text-xs">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="deleteEmployee('${emp.id}')" title="حذف" class="p-1.5 text-red-600 hover:bg-red-100 rounded-lg transition-all text-xs">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function getQualificationBadge(q) {
+            switch(q) {
+                case 'دكتوراه':
+                case 'ماجستير':
+                case 'دبلوم عالي':
+                    return 'bg-purple-50 text-purple-700 border border-purple-200';
+                case 'بكالوريوس':
+                    return 'bg-blue-50 text-blue-700 border border-blue-200';
+                case 'دبلوم':
+                    return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                case 'إعدادية':
+                    return 'bg-amber-50 text-amber-700 border border-amber-200';
+                default:
+                    return 'bg-slate-100 text-slate-700 border border-slate-200';
+            }
+        }
+
+        // تبديل التبويبات
+        function switchTab(tab) {
+            document.getElementById('section-table').classList.toggle('hidden', tab !== 'table');
+            document.getElementById('section-stats').classList.toggle('hidden', tab !== 'stats');
+
+            const btnTable = document.getElementById('tab-table');
+            const btnStats = document.getElementById('tab-stats');
+
+            if (tab === 'table') {
+                btnTable.classList.add('active');
+                btnTable.classList.remove('text-slate-600');
+                btnStats.classList.remove('active');
+                btnStats.classList.add('text-slate-600');
+            } else {
+                btnStats.classList.add('active');
+                btnStats.classList.remove('text-slate-600');
+                btnTable.classList.remove('active');
+                btnTable.classList.add('text-slate-600');
+                renderStatistics();
+            }
+        }
+
+        // رسم شاشات الإحصائيات
+        function renderStatistics() {
+            const total = allEmployees.length || 1;
+
+            const qualCounts = {};
+            const gradeCounts = {};
+            let nationalCount = 0;
+            let residenceCount = 0;
+            let voterCount = 0;
+            let allThreeCount = 0;
+
+            allEmployees.forEach(e => {
+                const q = e.qualification || 'غير محدد';
+                qualCounts[q] = (qualCounts[q] || 0) + 1;
+
+                const g = e.jobGrade || 'غير محدد';
+                gradeCounts[g] = (gradeCounts[g] || 0) + 1;
+
+                const hasN = !!e.attachments?.nationalId;
+                const hasR = !!e.attachments?.residenceCard;
+                const hasV = !!e.attachments?.voterCard;
+
+                if (hasN) nationalCount++;
+                if (hasR) residenceCount++;
+                if (hasV) voterCount++;
+                if (hasN && hasR && hasV) allThreeCount++;
+            });
+
+            // رسم أشرطة المؤهلات
+            const qualContainer = document.getElementById('statsQualifications');
+            let qHtml = '';
+            Object.entries(qualCounts).sort((a,b) => b[1] - a[1]).forEach(([label, count]) => {
+                const pct = Math.round((count / total) * 100);
+                qHtml += `
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                            <span>${label}</span>
+                            <span class="font-mono text-slate-500">${count} (${pct}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2">
+                            <div class="bg-emerald-500 h-2 rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            qualContainer.innerHTML = qHtml || '<p class="text-xs text-slate-400">لا توجد بيانات</p>';
+
+            // رسم أشرطة الدرجات الوظيفية
+            const gradeContainer = document.getElementById('statsGrades');
+            let gHtml = '';
+            Object.entries(gradeCounts).sort((a,b) => b[1] - a[1]).forEach(([label, count]) => {
+                const pct = Math.round((count / total) * 100);
+                gHtml += `
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                            <span>${label}</span>
+                            <span class="font-mono text-slate-500">${count} (${pct}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            gradeContainer.innerHTML = gHtml || '<p class="text-xs text-slate-400">لا توجد بيانات</p>';
+
+            // موقف المستمسكات
+            const docsContainer = document.getElementById('statsDocs');
+            const nPct = Math.round((nationalCount / total) * 100);
+            const rPct = Math.round((residenceCount / total) * 100);
+            const vPct = Math.round((voterCount / total) * 100);
+            const allPct = Math.round((allThreeCount / total) * 100);
+
+            docsContainer.innerHTML = `
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                        <span>1. البطاقة الموحدة</span>
+                        <span class="font-mono text-blue-600">${nationalCount} من ${total} (${nPct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${nPct}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                        <span>2. بطاقة السكن</span>
+                        <span class="font-mono text-emerald-600">${residenceCount} من ${total} (${rPct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2.5">
+                        <div class="bg-emerald-600 h-2.5 rounded-full" style="width: ${rPct}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                        <span>3. بطاقة الناخب</span>
+                        <span class="font-mono text-purple-600">${voterCount} من ${total} (${vPct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2.5">
+                        <div class="bg-purple-600 h-2.5 rounded-full" style="width: ${vPct}%"></div>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-slate-100">
+                    <div class="flex justify-between text-xs font-bold text-slate-800 mb-1">
+                        <span>مكتمل المستمسكات بالكامل (3 من 3)</span>
+                        <span class="font-mono text-emerald-700 font-black">${allThreeCount} (${allPct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-3">
+                        <div class="bg-emerald-500 h-3 rounded-full" style="width: ${allPct}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========================================================
+        // دالة الطباعة بالعرض على ورقة A4 (Landscape Print)
+        // ========================================================
+        function printTableLandscape() {
+            document.body.classList.remove('print-individual-mode');
+
+            // تحديث بيانات ترويسة الطباعة
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ar-IQ', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' + now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' });
+            
+            const dateEl = document.getElementById('printDate');
+            if (dateEl) dateEl.innerText = dateStr;
+
+            const totalEl = document.getElementById('printTotalRecords');
+            if (totalEl) totalEl.innerText = filteredEmployees.length + ' موظف/شاب';
+
+            let completeCount = 0;
+            filteredEmployees.forEach(e => {
+                const dCount = (e.attachments?.nationalId ? 1 : 0) +
+                               (e.attachments?.residenceCard ? 1 : 0) +
+                               (e.attachments?.voterCard ? 1 : 0);
+                if (dCount === 3) completeCount++;
+            });
+            const completeEl = document.getElementById('printCompleteRecords');
+            if (completeEl) completeEl.innerText = completeCount + ' مكتمل';
+
+            // التأكد من أن تبويب الجدول معروض
+            switchTab('table');
+
+            // فتح نافذة الطباعة (ستأخذ الوضع الأفقي A4 تلقائياً طبقاً للـ CSS)
+            setTimeout(() => {
+                window.print();
+            }, 100);
+        }
+
+        // طباعة بطاقة الموظف المعروضة حالياً
+        function printCurrentEmployee() {
+            document.body.classList.add('print-individual-mode');
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('print-individual-mode');
+                }, 500);
+            }, 100);
+        }
+
+        // فتح نافذة المعاينة الشاملة للموظف
+        function openViewModal(empId) {
+            const emp = allEmployees.find(e => e.id === empId);
+            if (!emp) return;
+            currentViewingEmp = emp;
+
+            document.getElementById('modalEmployeeName').innerText = emp.fullName || 'بطاقة الموظف';
+            document.getElementById('detailFullName').innerText = emp.fullName || '-';
+            document.getElementById('detailPhone').innerText = emp.phone || '-';
+            document.getElementById('detailBirthDate').innerText = emp.birthDate || '-';
+            document.getElementById('detailResidence').innerText = emp.residence || '-';
+            document.getElementById('detailQualification').innerText = emp.qualification || '-';
+            document.getElementById('detailWorkplace').innerText = emp.workplace || '-';
+            document.getElementById('detailJobGrade').innerText = emp.jobGrade || '-';
+            document.getElementById('detailCreatedAt').innerText = emp.createdAt ? new Date(emp.createdAt).toLocaleDateString('ar-IQ') : '-';
+
+            const notesEl = document.getElementById('notesContainer');
+            if (emp.notes) {
+                document.getElementById('detailNotes').innerText = emp.notes;
+                notesEl.classList.remove('hidden');
+            } else {
+                notesEl.classList.add('hidden');
+            }
+
+            // رسم المستمسكات
+            const grid = document.getElementById('modalAttachmentsGrid');
+            const items = [
+                { key: 'nationalId', title: '1. البطاقة الموحدة', icon: 'fa-id-card', color: 'blue', data: emp.attachments?.nationalId },
+                { key: 'residenceCard', title: '2. بطاقة السكن', icon: 'fa-house', color: 'emerald', data: emp.attachments?.residenceCard },
+                { key: 'voterCard', title: '3. بطاقة الناخب', icon: 'fa-check-to-slot', color: 'purple', data: emp.attachments?.voterCard }
+            ];
+
+            let html = '';
+            items.forEach(item => {
+                if (item.data && item.data.data) {
+                    const isPdf = (item.data.name || '').toLowerCase().endsWith('.pdf') || item.data.type === 'application/pdf';
+                    html += `
+                        <div class="bg-white border border-${item.color}-200 rounded-2xl p-3 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-700 block mb-2">${item.title}</span>
+                                <div class="w-full h-32 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer mb-2.5 relative group" onclick="${isPdf ? `downloadDoc('${emp.fullName}_${item.title}', '${item.data.data}')` : `openLightbox('${item.data.data}', '${item.title} - ${emp.fullName}')`}">
+                                    ${isPdf ? `
+                                        <div class="text-center p-3">
+                                            <i class="fa-solid fa-file-pdf text-red-500 text-3xl mb-1"></i>
+                                            <span class="block text-[11px] font-bold text-slate-700 truncate">${item.data.name}</span>
+                                        </div>
+                                    ` : `
+                                        <img src="${item.data.data}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                        <div class="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm transition-opacity">
+                                            <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                        </div>
+                                    `}
+                                </div>
+                            </div>
+                            <button onclick="downloadDoc('${emp.fullName}_${item.title}', '${item.data.data}')" class="w-full bg-${item.color}-50 hover:bg-${item.color}-100 text-${item.color}-700 font-bold py-1.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
+                                <i class="fa-solid fa-download"></i>
+                                <span>تنزيل المرفق</span>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-4 text-center flex flex-col items-center justify-center min-h-[160px]">
+                            <i class="fa-solid ${item.icon} text-slate-300 text-2xl mb-2"></i>
+                            <span class="text-xs font-bold text-slate-500 mb-1">${item.title}</span>
+                            <span class="text-[11px] text-slate-400">غير مرفق</span>
+                        </div>
+                    `;
+                }
+            });
+            grid.innerHTML = html;
+
+            document.getElementById('viewModal').classList.remove('hidden');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.add('hidden');
+        }
+
+        // تنزيل المرفق
+        function downloadDoc(fileName, dataUri) {
+            const a = document.createElement('a');
+            a.href = dataUri;
+            a.download = `${fileName}.jpg`;
+            if (dataUri.startsWith('data:application/pdf')) {
+                a.download = `${fileName}.pdf`;
+            }
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("جاري تنزيل الملف...");
+        }
+
+        // تكبير الصورة في Lightbox
+        function openLightbox(src, caption) {
+            document.getElementById('lightboxImg').src = src;
+            document.getElementById('lightboxCaption').innerText = caption;
+            document.getElementById('imageLightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('imageLightbox').classList.add('hidden');
+        }
+
+        // فتح نموذج التعديل
+        function openEditModal(empId) {
+            const emp = allEmployees.find(e => e.id === empId);
+            if (!emp) return;
+
+            document.getElementById('editEmpId').value = emp.id;
+            document.getElementById('editFullName').value = emp.fullName || '';
+            document.getElementById('editPhone').value = emp.phone || '';
+            document.getElementById('editBirthDate').value = emp.birthDate || '';
+            document.getElementById('editResidence').value = emp.residence || '';
+            document.getElementById('editQualification').value = emp.qualification || 'بكالوريوس';
+            document.getElementById('editWorkplace').value = emp.workplace || '';
+            document.getElementById('editJobGrade').value = emp.jobGrade || 'الدرجة الخامسة';
+            document.getElementById('editNotes').value = emp.notes || '';
+
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        // حفظ التعديلات
+        async function saveEditedEmployee(e) {
+            e.preventDefault();
+            const empId = document.getElementById('editEmpId').value;
+            const emp = allEmployees.find(item => item.id === empId);
+            if (!emp) return;
+
+            const updatedData = {
+                ...emp,
+                fullName: document.getElementById('editFullName').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+                birthDate: document.getElementById('editBirthDate').value.trim(),
+                residence: document.getElementById('editResidence').value.trim(),
+                qualification: document.getElementById('editQualification').value,
+                workplace: document.getElementById('editWorkplace').value.trim(),
+                jobGrade: document.getElementById('editJobGrade').value,
+                notes: document.getElementById('editNotes').value.trim(),
+                updatedAt: new Date().toISOString()
+            };
+
+            const saveBtn = document.getElementById('saveEditBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+
+            try {
+                if (firebaseDb) {
+                    await firebaseDb.ref('employees/' + empId).set(updatedData);
+                } else {
+                    await fetch(`${RTDB_URL}/employees/${empId}.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedData)
+                    });
+                }
+
+                const idx = allEmployees.findIndex(x => x.id === empId);
+                if (idx !== -1) allEmployees[idx] = updatedData;
+                saveToLocalStorage(allEmployees);
+                updateDashboardUI();
+
+                closeEditModal();
+                showToast("تم تحديث بيانات الموظف بنجاح!");
+            } catch (err) {
+                console.error("Update error:", err);
+                alert("حدث خطأ أثناء حفظ التعديلات!");
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'حفظ التعديلات';
+            }
+        }
+
+        // حذف موظف
+        async function deleteEmployee(empId) {
+            const emp = allEmployees.find(e => e.id === empId);
+            const name = emp ? emp.fullName : 'هذا الموظف';
+
+            if (!confirm(`هل أنت متأكد تماماً من حذف سجل (${name})؟\nلا يمكن التراجع عن هذه العملية.`)) {
+                return;
+            }
+
+            try {
+                if (firebaseDb) {
+                    await firebaseDb.ref('employees/' + empId).remove();
+                } else {
+                    await fetch(`${RTDB_URL}/employees/${empId}.json`, { method: 'DELETE' });
+                }
+
+                allEmployees = allEmployees.filter(e => e.id !== empId);
+                saveToLocalStorage(allEmployees);
+                updateDashboardUI();
+                showToast("تم حذف السجل بنجاح");
+            } catch (err) {
+                console.error("Delete error:", err);
+                alert("تعذر حذف السجل من السحابة!");
+            }
+        }
+
+        // تصدير البيانات إلى Excel
+        function exportToExcel() {
+            if (allEmployees.length === 0) {
+                alert("لا توجد بيانات متاحة للتصدير!");
+                return;
+            }
+
+            const rows = filteredEmployees.map((emp, i) => ({
+                "ت": i + 1,
+                "الاسم الثلاثي واللقب": emp.fullName || "",
+                "رقم الهاتف": emp.phone || "",
+                "التولد": emp.birthDate || "",
+                "السكن": emp.residence || "",
+                "التحصيل الدراسي": emp.qualification || "",
+                "مكان العمل": emp.workplace || "",
+                "الدرجة الوظيفية": emp.jobGrade || "",
+                "البطاقة الموحدة": emp.attachments?.nationalId ? "مرفقة" : "غير مرفقة",
+                "بطاقة السكن": emp.attachments?.residenceCard ? "مرفقة" : "غير مرفقة",
+                "بطاقة الناخب": emp.attachments?.voterCard ? "مرفقة" : "غير مرفقة",
+                "ملاحظات": emp.notes || "",
+                "تاريخ التسجيل": emp.createdAt ? new Date(emp.createdAt).toLocaleDateString('ar-IQ') : ""
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(rows);
+            ws['!dir'] = 'rtl';
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "ملف الشباب والرياضة");
+
+            const today = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `سجل_موظفي_الشباب_والرياضة_${today}.xlsx`);
+            showToast("تم تصدير ملف الإكسل بنجاح!");
+        }
+
+        // نافذة الإضافة السريعة
+        function openAddModal() {
+            window.open('form.html', '_blank');
+        }
+
+        // رسائل Toast
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            t.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                t.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // التوقيت الحي
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('live-clock').innerText = timeStr;
+        }, 1000);
+
+        // بدء التشغيل المباشر للوحة
+        window.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+        });
+    </script>
+</body>
+</html>

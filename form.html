@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تيار الحكمة - ملف الشباب والرياضة | استمارة تسجيل البيانات</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Cairo Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+        }
+        .custom-file-box {
+            transition: all 0.25s ease;
+            border: 2px dashed #cbd5e1;
+        }
+        .custom-file-box:hover, .custom-file-box.dragover {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="p-3 sm:p-6 min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-3xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-4">
+        
+        <!-- Header Banner -->
+        <div class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white p-6 sm:p-8 text-center relative overflow-hidden">
+            <div class="absolute -right-12 -top-12 w-40 h-40 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+            <div class="absolute -left-12 -bottom-12 w-40 h-40 bg-blue-500/20 rounded-full blur-xl pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col items-center">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 mb-3 shadow-inner">
+                    <i class="fa-solid fa-users-line text-3xl sm:text-4xl text-amber-300"></i>
+                </div>
+                <div class="inline-block px-4 py-1 rounded-full bg-amber-400/20 border border-amber-300/30 text-amber-300 text-xs sm:text-sm font-bold mb-2">
+                    تيار الحكمة الوطني
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-wide text-white mb-2">
+                    ملف الشباب والرياضة
+                </h1>
+                <p class="text-blue-200 text-xs sm:text-sm max-w-lg mx-auto">
+                    استمارة جمع وتحديث بيانات الشباب والموظفين والمستمسكات الثبوتية
+                </p>
+
+            </div>
+        </div>
+
+        <!-- Form Body -->
+        <form id="youthEmployeeForm" class="p-6 sm:p-8 space-y-7" novalidate>
+            
+            <!-- Section 1: البيانات الشخصية -->
+            <div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-id-card"></i>
+                    </span>
+                    المعلومات الشخصية والاتصال
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                    
+                    <!-- الاسم الثلاثي واللقب -->
+                    <div class="md:col-span-2">
+                        <label for="fullName" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            الاسم الثلاثي واللقب <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute right-3.5 top-3.5 text-slate-400"></i>
+                            <input type="text" id="fullName" required placeholder="مثال: أحمد حسن علي الموسوي"
+                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
+                        </div>
+                    </div>
+
+                    <!-- رقم الهاتف -->
+                    <div>
+                        <label for="phone" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            رقم الهاتف <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-phone absolute right-3.5 top-3.5 text-slate-400"></i>
+                            <input type="tel" id="phone" required placeholder="07XXXXXXXX" dir="ltr"
+                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold text-right transition-all">
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">يُفضل إدخال رقم يحتوي على واتساب للتواصل</p>
+                    </div>
+
+                    <!-- التولد -->
+                    <div>
+                        <label for="birthDate" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            التولد (تاريخ أو سنة الميلاد) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-cake-candles absolute right-3.5 top-3.5 text-slate-400"></i>
+                            <input type="text" id="birthDate" required placeholder="مثال: 1995/05/12 أو 1995"
+                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
+                        </div>
+                    </div>
+
+                    <!-- السكن -->
+                    <div class="md:col-span-2">
+                        <label for="residence" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            السكن (المحافظة / القضاء / الحي) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-location-dot absolute right-3.5 top-3.5 text-slate-400"></i>
+                            <input type="text" id="residence" required placeholder="مثال: واسط - الكوت - حي الزهراء"
+                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Section 2: التحصيل والوظيفة -->
+            <div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </span>
+                    التحصيل الدراسي والبيانات الوظيفية
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                    
+                    <!-- التحصيل الدراسي -->
+                    <div>
+                        <label for="qualification" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            التحصيل الدراسي <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user-graduate absolute right-3.5 top-3.5 text-slate-400"></i>
+                            <select id="qualification" required
+                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold bg-white transition-all appearance-none">
+                                <option value="">-- اختر التحصيل الدراسي --</option>
+                                <option value="دكتوراه">دكتوراه</option>
+                                <option value="ماجستير">ماجستير</option>
+                                <option value="دبلوم عالي">دبلوم عالي</option>
+                                <option value="بكالوريوس">بكالوريوس</option>
+                                <option value="دبلوم">دبلوم</option>
+                                <option value="إعدادية">إعدادية</option>
+                                <option value="متوسطة">متوسطة</option>
+                                <option value="ابتدائية">ابتدائية</option>
+                                <option value="يقرأ ويكتب">يقرأ ويكتب</option>
+                                <option value="أخرى">أخرى (غير ذلك)</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute left-3.5 top-3.5 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- مكان العمل -->
+                    <div>
+                        <label for="workplace" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            مكان العمل <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-briefcase absolute right-3.5 top-3.5 text-slate-400"></i>
+                            <input type="text" id="workplace" required placeholder="مثال: مديرية شباب ورياضة واسط / قطاع خاص"
+                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold transition-all">
+                        </div>
+                    </div>
+
+                    <!-- الدرجة الوظيفية -->
+                    <div class="md:col-span-2">
+                        <label for="jobGrade" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            الدرجة الوظيفية <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-layer-group absolute right-3.5 top-3.5 text-slate-400"></i>
+                            <select id="jobGrade" required
+                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold bg-white transition-all appearance-none">
+                                <option value="">-- اختر الدرجة الوظيفية / الصفة --</option>
+                                <option value="الدرجة الأولى">الدرجة الأولى</option>
+                                <option value="الدرجة الثانية">الدرجة الثانية</option>
+                                <option value="الدرجة الثالثة">الدرجة الثالثة</option>
+                                <option value="الدرجة الرابعة">الدرجة الرابعة</option>
+                                <option value="الدرجة الخامسة">الدرجة الخامسة</option>
+                                <option value="الدرجة السادسة">الدرجة السادسة</option>
+                                <option value="الدرجة السابعة">الدرجة السابعة</option>
+                                <option value="الدرجة الثامنة">الدرجة الثامنة</option>
+                                <option value="الدرجة التاسعة">الدرجة التاسعة</option>
+                                <option value="الدرجة العاشرة">الدرجة العاشرة</option>
+                                <option value="عقد وزاري / قرار 315">عقد وزاري / قرار 315</option>
+                                <option value="أجر يومي">أجر يومي</option>
+                                <option value="قطاع خاص">قطاع خاص</option>
+                                <option value="كاسب / غير موظف">كاسب / غير موظف</option>
+                                <option value="طالب">طالب</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute left-3.5 top-3.5 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Section 3: المرفقات والمستمسكات (موحدة + سكن + بطاقة ناخب) -->
+            <div>
+                <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-200">
+                    <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </span>
+                        المرفقات الثبوتية المطلوبة
+                    </h3>
+                    <span class="text-xs bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full border border-amber-200 font-bold">
+                        موحدة + سكن + بطاقة ناخب
+                    </span>
+                </div>
+                <p class="text-slate-500 text-xs mb-4">
+                    يمكنك التقاط صورة واضحة بكاميرا الهاتف أو اختيار ملف صورة (JPG, PNG) أو مستند (PDF). يتم ضغط الصور تلقائياً لتسريع الإرسال.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <!-- 1. البطاقة الموحدة -->
+                    <div class="custom-file-box rounded-2xl p-4 text-center bg-slate-50/50 relative flex flex-col justify-between" id="box-nationalId">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mx-auto mb-2.5 shadow-sm">
+                                <i class="fa-solid fa-address-card text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">1. البطاقة الموحدة</h4>
+                            <p class="text-[11px] text-slate-500 mb-3">صورة واضحة للوجهين أو ملف PDF</p>
+                        </div>
+                        
+                        <div>
+                            <!-- Preview Container -->
+                            <div id="preview-nationalId" class="hidden mb-3 relative rounded-xl overflow-hidden border border-blue-200 bg-white">
+                                <img src="" alt="الموحدة" class="w-full h-24 object-cover">
+                                <button type="button" onclick="removeAttachment('nationalId')" class="absolute top-1 left-1 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs shadow hover:bg-red-700">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                                <span class="block text-[10px] text-slate-600 p-1 truncate font-medium" id="name-nationalId"></span>
+                            </div>
+
+                            <label class="cursor-pointer bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 hover:border-blue-300 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                <span id="btn-text-nationalId">اختر / التقط صورة</span>
+                                <input type="file" id="file-nationalId" accept="image/*,application/pdf" class="hidden" onchange="handleFileUpload(event, 'nationalId')">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 2. بطاقة السكن -->
+                    <div class="custom-file-box rounded-2xl p-4 text-center bg-slate-50/50 relative flex flex-col justify-between" id="box-residenceCard">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-2.5 shadow-sm">
+                                <i class="fa-solid fa-house-chimney text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">2. بطاقة السكن</h4>
+                            <p class="text-[11px] text-slate-500 mb-3">صورة واضحة لبطاقة السكن</p>
+                        </div>
+
+                        <div>
+                            <!-- Preview Container -->
+                            <div id="preview-residenceCard" class="hidden mb-3 relative rounded-xl overflow-hidden border border-emerald-200 bg-white">
+                                <img src="" alt="السكن" class="w-full h-24 object-cover">
+                                <button type="button" onclick="removeAttachment('residenceCard')" class="absolute top-1 left-1 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs shadow hover:bg-red-700">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                                <span class="block text-[10px] text-slate-600 p-1 truncate font-medium" id="name-residenceCard"></span>
+                            </div>
+
+                            <label class="cursor-pointer bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 hover:border-emerald-300 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                <span id="btn-text-residenceCard">اختر / التقط صورة</span>
+                                <input type="file" id="file-residenceCard" accept="image/*,application/pdf" class="hidden" onchange="handleFileUpload(event, 'residenceCard')">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 3. بطاقة الناخب -->
+                    <div class="custom-file-box rounded-2xl p-4 text-center bg-slate-50/50 relative flex flex-col justify-between" id="box-voterCard">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mx-auto mb-2.5 shadow-sm">
+                                <i class="fa-solid fa-check-to-slot text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">3. بطاقة الناخب</h4>
+                            <p class="text-[11px] text-slate-500 mb-3">صورة واضحة لبطاقة الناخب</p>
+                        </div>
+
+                        <div>
+                            <!-- Preview Container -->
+                            <div id="preview-voterCard" class="hidden mb-3 relative rounded-xl overflow-hidden border border-purple-200 bg-white">
+                                <img src="" alt="الناخب" class="w-full h-24 object-cover">
+                                <button type="button" onclick="removeAttachment('voterCard')" class="absolute top-1 left-1 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs shadow hover:bg-red-700">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                                <span class="block text-[10px] text-slate-600 p-1 truncate font-medium" id="name-voterCard"></span>
+                            </div>
+
+                            <label class="cursor-pointer bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 hover:border-purple-300 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                <span id="btn-text-voterCard">اختر / التقط صورة</span>
+                                <input type="file" id="file-voterCard" accept="image/*,application/pdf" class="hidden" onchange="handleFileUpload(event, 'voterCard')">
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ملاحظات إضافية (اختياري) -->
+            <div>
+                <label for="notes" class="block text-slate-700 font-bold mb-1.5 text-sm">ملاحظات إضافية (اختياري)</label>
+                <textarea id="notes" rows="2" placeholder="أي تفاصيل أو ملاحظات إضافية تود ذكرها..."
+                    class="w-full border border-slate-300 p-3 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-3">
+                <button type="submit" id="submitBtn"
+                    class="w-full bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white py-4 px-6 rounded-2xl font-bold text-base transition-all duration-200 shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-paper-plane text-amber-300"></i>
+                    <span>إرسال وحفظ البيانات</span>
+                </button>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="errorBanner" class="hidden p-4 bg-red-50 text-red-700 border border-red-200 rounded-2xl flex items-center gap-3 font-bold text-sm">
+                <i class="fa-solid fa-triangle-exclamation text-xl text-red-500 shrink-0"></i>
+                <span id="errorMessage">يرجى ملء جميع الحقول المطلوبة بشكل صحيح.</span>
+            </div>
+
+        </form>
+
+        <!-- Success Modal / Overlay -->
+        <div id="successOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-200">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner text-4xl">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 class="text-2xl font-black text-slate-800 mb-2">تم الحفظ بنجاح!</h3>
+                <p class="text-slate-600 text-sm mb-4">
+                    تم تسجيل بيانات الموظف بنجاح في قاعدة البيانات المركزية لملف الشباب والرياضة.
+                </p>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-right text-xs space-y-1.5">
+                    <p><span class="text-slate-400 font-medium">الاسم:</span> <b class="text-slate-800" id="successName"></b></p>
+                    <p><span class="text-slate-400 font-medium">الهاتف:</span> <b class="text-blue-700 font-mono" id="successPhone"></b></p>
+                    <p><span class="text-slate-400 font-medium">الدرجة / الصفة:</span> <b class="text-emerald-700" id="successGrade"></b></p>
+                    <p><span class="text-slate-400 font-medium">المرفقات المسجلة:</span> <b class="text-purple-700" id="successDocsCount"></b></p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="button" onclick="resetFormForNew()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-200 transition-all">
+                        <i class="fa-solid fa-plus ml-1"></i> تسجيل شخص آخر
+                    </button>
+                    <button type="button" onclick="document.getElementById('successOverlay').classList.add('hidden')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-xs transition-all">
+                        <i class="fa-solid fa-check ml-1"></i> تم / إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // إعدادات Firebase Realtime Database
+        const RTDB_URL = "https://empoleeinformation-default-rtdb.firebaseio.com";
+        
+        let firebaseDb = null;
+        try {
+            firebase.initializeApp({
+                databaseURL: RTDB_URL,
+                projectId: "empoleeinformation"
+            });
+            firebaseDb = firebase.database();
+            console.log("Firebase Realtime Database initialized successfully");
+        } catch (e) {
+            console.warn("Firebase SDK init fallback:", e);
+        }
+
+        // مخزن المرفقات المرفوعة بصيغة Base64
+        const uploadedAttachments = {
+            nationalId: null,      // { name, type, data }
+            residenceCard: null,   // { name, type, data }
+            voterCard: null        // { name, type, data }
+        };
+
+        // دالة ضغط وتحويل الصور إلى Base64
+        function compressAndConvertFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.75) {
+            return new Promise((resolve, reject) => {
+                if (file.type === "application/pdf") {
+                    // إذا كان ملف PDF يتم قراءته مباشرة
+                    const reader = new FileReader();
+                    reader.onload = () => resolve({
+                        name: file.name,
+                        type: file.type,
+                        data: reader.result
+                    });
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                    return;
+                }
+
+                // للصور: نضغطها باستخدام Canvas
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round((width * maxHeight) / height);
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+                        resolve({
+                            name: file.name,
+                            type: 'image/jpeg',
+                            data: compressedBase64
+                        });
+                    };
+                    img.onerror = reject;
+                };
+                reader.onerror = reject;
+            });
+        }
+
+        // التعامل مع رفع الملف
+        async function handleFileUpload(event, fieldKey) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const btnText = document.getElementById(`btn-text-${fieldKey}`);
+            const originalText = btnText.innerText;
+            btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري المعالجة...';
+
+            try {
+                const processed = await compressAndConvertFile(file);
+                uploadedAttachments[fieldKey] = processed;
+
+                // إظهار المعاينة
+                const previewContainer = document.getElementById(`preview-${fieldKey}`);
+                const previewImg = previewContainer.querySelector('img');
+                const nameLabel = document.getElementById(`name-${fieldKey}`);
+
+                if (processed.type === 'application/pdf') {
+                    previewImg.src = 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
+                } else {
+                    previewImg.src = processed.data;
+                }
+
+                nameLabel.innerText = file.name;
+                previewContainer.classList.remove('hidden');
+                btnText.innerText = 'تغيير الملف';
+
+                // تمييز الصندوق بلون أخضر خفيف
+                document.getElementById(`box-${fieldKey}`).classList.add('bg-emerald-50/60', 'border-emerald-300');
+            } catch (err) {
+                console.error("Upload error:", err);
+                alert("حدث خطأ أثناء معالجة الملف، يرجى المحاولة مرة أخرى.");
+                btnText.innerText = originalText;
+            }
+        }
+
+        // حذف مرفق
+        function removeAttachment(fieldKey) {
+            uploadedAttachments[fieldKey] = null;
+            document.getElementById(`file-${fieldKey}`).value = '';
+            document.getElementById(`preview-${fieldKey}`).classList.add('hidden');
+            document.getElementById(`btn-text-${fieldKey}`).innerText = 'اختر / التقط صورة';
+            document.getElementById(`box-${fieldKey}`).classList.remove('bg-emerald-50/60', 'border-emerald-300');
+        }
+
+        // حفظ في قاعدة البيانات عبر Firebase SDK أو REST API
+        async function saveEmployeeData(employee) {
+            const docId = employee.id;
+
+            // 1. المحاولة عبر Firebase SDK إن كان متصلاً
+            if (firebaseDb) {
+                try {
+                    await firebaseDb.ref('employees/' + docId).set(employee);
+                    return true;
+                } catch (sdkErr) {
+                    console.warn("SDK save failed, trying REST API:", sdkErr);
+                }
+            }
+
+            // 2. المحاولة عبر REST API لـ Realtime Database
+            const restUrl = `${RTDB_URL}/employees/${docId}.json`;
+            const resp = await fetch(restUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(employee)
+            });
+
+            if (!resp.ok) {
+                throw new Error(`HTTP error ${resp.status}`);
+            }
+
+            // 3. نسخة احتياطية محلية
+            try {
+                let local = JSON.parse(localStorage.getItem('alhikma_youth_employees') || '[]');
+                local = local.filter(e => e.id !== docId);
+                local.unshift(employee);
+                localStorage.setItem('alhikma_youth_employees', JSON.stringify(local));
+            } catch (e) {}
+
+            return true;
+        }
+
+        // إرسال النموذج
+        document.getElementById('youthEmployeeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const errorBanner = document.getElementById('errorBanner');
+            const errorMessage = document.getElementById('errorMessage');
+            errorBanner.classList.add('hidden');
+
+            // جلب البيانات
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const birthDate = document.getElementById('birthDate').value.trim();
+            const residence = document.getElementById('residence').value.trim();
+            const qualification = document.getElementById('qualification').value;
+            const workplace = document.getElementById('workplace').value.trim();
+            const jobGrade = document.getElementById('jobGrade').value;
+            const notes = document.getElementById('notes').value.trim();
+
+            // التحقق من الحقول الإجبارية
+            if (!fullName || !phone || !birthDate || !residence || !qualification || !workplace || !jobGrade) {
+                errorMessage.innerText = "يرجى تعبئة كافة الحقول المطلوبة المشار إليها بعلامة (*).";
+                errorBanner.classList.remove('hidden');
+                return;
+            }
+
+            // توليد معرف فريد للموظف بناءً على الوقت ورقم الهاتف
+            const cleanPhone = phone.replace(/\D/g, '');
+            const timestamp = Date.now();
+            const empId = `EMP_${cleanPhone ? cleanPhone.slice(-6) : ''}_${timestamp.toString().slice(-4)}`;
+
+            // حساب عدد المرفقات المرفوعة
+            let docsCount = 0;
+            if (uploadedAttachments.nationalId) docsCount++;
+            if (uploadedAttachments.residenceCard) docsCount++;
+            if (uploadedAttachments.voterCard) docsCount++;
+
+            const employeeData = {
+                id: empId,
+                fullName: fullName,
+                phone: phone,
+                birthDate: birthDate,
+                residence: residence,
+                qualification: qualification,
+                workplace: workplace,
+                jobGrade: jobGrade,
+                notes: notes,
+                attachments: {
+                    nationalId: uploadedAttachments.nationalId ? {
+                        name: uploadedAttachments.nationalId.name,
+                        type: uploadedAttachments.nationalId.type,
+                        data: uploadedAttachments.nationalId.data
+                    } : null,
+                    residenceCard: uploadedAttachments.residenceCard ? {
+                        name: uploadedAttachments.residenceCard.name,
+                        type: uploadedAttachments.residenceCard.type,
+                        data: uploadedAttachments.residenceCard.data
+                    } : null,
+                    voterCard: uploadedAttachments.voterCard ? {
+                        name: uploadedAttachments.voterCard.name,
+                        type: uploadedAttachments.voterCard.type,
+                        data: uploadedAttachments.voterCard.data
+                    } : null
+                },
+                docsCount: docsCount,
+                hasAllDocs: docsCount === 3,
+                createdAt: new Date().toISOString(),
+                createdTimestamp: timestamp
+            };
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xl"></i><span>جاري الإرسال وحفظ البيانات...</span>';
+
+            try {
+                await saveEmployeeData(employeeData);
+
+                // إظهار نافذة النجاح
+                document.getElementById('successName').innerText = fullName;
+                document.getElementById('successPhone').innerText = phone;
+                document.getElementById('successGrade').innerText = jobGrade;
+                document.getElementById('successDocsCount').innerText = `${docsCount} من 3 (${docsCount === 3 ? 'مكتمل ✅' : 'مرفوع جزئياً ⚠️'})`;
+
+                document.getElementById('successOverlay').classList.remove('hidden');
+
+            } catch (err) {
+                console.error("Save error:", err);
+                errorMessage.innerText = "تعذر الاتصال بقاعدة البيانات! يرجى التأكد من اتصال الإنترنت ثم المحاولة مجدداً.";
+                errorBanner.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            }
+        });
+
+        // إعادة تعيين النموذج لتسجيل شخص جديد
+        function resetFormForNew() {
+            document.getElementById('youthEmployeeForm').reset();
+            removeAttachment('nationalId');
+            removeAttachment('residenceCard');
+            removeAttachment('voterCard');
+            document.getElementById('successOverlay').classList.add('hidden');
+            document.getElementById('errorBanner').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
