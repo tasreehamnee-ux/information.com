@@ -65,9 +65,6 @@
             <!-- Section 1: البيانات الشخصية -->
             <div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200 flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-id-card"></i>
-                    </span>
                     المعلومات الشخصية والاتصال
                 </h3>
                 
@@ -78,10 +75,9 @@
                         <label for="fullName" class="block text-slate-700 font-bold mb-1.5 text-sm">
                             الاسم الثلاثي واللقب <span class="text-red-500">*</span>
                         </label>
-                        <div class="relative">
-                            <i class="fa-solid fa-user absolute right-3.5 top-3.5 text-slate-400"></i>
+                        <div>
                             <input type="text" id="fullName" required
-                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
                         </div>
                     </div>
 
@@ -90,10 +86,9 @@
                         <label for="phone" class="block text-slate-700 font-bold mb-1.5 text-sm">
                             رقم الهاتف <span class="text-red-500">*</span>
                         </label>
-                        <div class="relative">
-                            <i class="fa-solid fa-phone absolute right-3.5 top-3.5 text-slate-400"></i>
+                        <div>
                             <input type="tel" id="phone" required dir="ltr"
-                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold text-right transition-all">
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold text-right transition-all">
                         </div>
                         <p class="text-[11px] text-slate-500 font-semibold mt-1">يرجى ان يكون رقم به واتس اب للتواصل</p>
                     </div>
@@ -103,10 +98,9 @@
                         <label for="birthDate" class="block text-slate-700 font-bold mb-1.5 text-sm">
                             التولد <span class="text-red-500">*</span>
                         </label>
-                        <div class="relative">
-                            <i class="fa-solid fa-cake-candles absolute right-3.5 top-3.5 text-slate-400"></i>
+                        <div>
                             <input type="text" id="birthDate" required
-                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
                         </div>
                     </div>
 
@@ -115,10 +109,9 @@
                         <label for="residence" class="block text-slate-700 font-bold mb-1.5 text-sm">
                             السكن <span class="text-red-500">*</span>
                         </label>
-                        <div class="relative">
-                            <i class="fa-solid fa-location-dot absolute right-3.5 top-3.5 text-slate-400"></i>
+                        <div>
                             <input type="text" id="residence" required
-                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm font-semibold transition-all">
                         </div>
                     </div>
 
@@ -128,9 +121,6 @@
             <!-- Section 2: التحصيل والوظيفة -->
             <div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200 flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-graduation-cap"></i>
-                    </span>
                     التحصيل الدراسي والبيانات الوظيفية
                 </h3>
                 
@@ -142,9 +132,8 @@
                             التحصيل الدراسي <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <i class="fa-solid fa-user-graduate absolute right-3.5 top-3.5 text-slate-400"></i>
                             <select id="qualification" required
-                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold bg-white transition-all appearance-none">
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold bg-white transition-all appearance-none">
                                 <option value="">-- اختر التحصيل الدراسي --</option>
                                 <option value="دكتوراه">دكتوراه</option>
                                 <option value="ماجستير">ماجستير</option>
@@ -166,22 +155,31 @@
                         <label for="workplace" class="block text-slate-700 font-bold mb-1.5 text-sm">
                             مكان العمل <span class="text-red-500">*</span>
                         </label>
-                        <div class="relative">
-                            <i class="fa-solid fa-briefcase absolute right-3.5 top-3.5 text-slate-400"></i>
+                        <div>
                             <input type="text" id="workplace" required
-                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold transition-all">
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold transition-all">
+                        </div>
+                    </div>
+
+                    <!-- العنوان الوظيفي -->
+                    <div>
+                        <label for="jobTitle" class="block text-slate-700 font-bold mb-1.5 text-sm">
+                            العنوان الوظيفي <span class="text-red-500">*</span>
+                        </label>
+                        <div>
+                            <input type="text" id="jobTitle" required
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold transition-all">
                         </div>
                     </div>
 
                     <!-- الدرجة الوظيفية -->
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="jobGrade" class="block text-slate-700 font-bold mb-1.5 text-sm">
                             الدرجة الوظيفية <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <i class="fa-solid fa-layer-group absolute right-3.5 top-3.5 text-slate-400"></i>
                             <select id="jobGrade" required
-                                class="w-full border border-slate-300 pr-10 pl-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold bg-white transition-all appearance-none">
+                                class="w-full border border-slate-300 px-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm font-semibold bg-white transition-all appearance-none">
                                 <option value="">-- اختر الدرجة الوظيفية / الصفة --</option>
                                 <option value="الدرجة الأولى">الدرجة الأولى</option>
                                 <option value="الدرجة الثانية">الدرجة الثانية</option>
@@ -207,9 +205,6 @@
             <div>
                 <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-200">
                     <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-paperclip"></i>
-                        </span>
                         المرفقات الثبوتية المطلوبة
                     </h3>
                     <span class="text-xs bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full border border-amber-200 font-bold">
@@ -346,6 +341,7 @@
                 <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6 text-right text-xs space-y-1.5">
                     <p><span class="text-slate-400 font-medium">الاسم:</span> <b class="text-slate-800" id="successName"></b></p>
                     <p><span class="text-slate-400 font-medium">الهاتف:</span> <b class="text-blue-700 font-mono" id="successPhone"></b></p>
+                    <p><span class="text-slate-400 font-medium">العنوان الوظيفي:</span> <b class="text-slate-800" id="successJobTitle"></b></p>
                     <p><span class="text-slate-400 font-medium">الدرجة / الصفة:</span> <b class="text-emerald-700" id="successGrade"></b></p>
                     <p><span class="text-slate-400 font-medium">المرفقات المسجلة:</span> <b class="text-purple-700" id="successDocsCount"></b></p>
                 </div>
@@ -541,11 +537,12 @@
             const residence = document.getElementById('residence').value.trim();
             const qualification = document.getElementById('qualification').value;
             const workplace = document.getElementById('workplace').value.trim();
+            const jobTitle = document.getElementById('jobTitle').value.trim();
             const jobGrade = document.getElementById('jobGrade').value;
             const notes = document.getElementById('notes').value.trim();
 
             // التحقق من الحقول الإجبارية
-            if (!fullName || !phone || !birthDate || !residence || !qualification || !workplace || !jobGrade) {
+            if (!fullName || !phone || !birthDate || !residence || !qualification || !workplace || !jobTitle || !jobGrade) {
                 errorMessage.innerText = "يرجى تعبئة كافة الحقول المطلوبة المشار إليها بعلامة (*).";
                 errorBanner.classList.remove('hidden');
                 return;
@@ -570,6 +567,7 @@
                 residence: residence,
                 qualification: qualification,
                 workplace: workplace,
+                jobTitle: jobTitle,
                 jobGrade: jobGrade,
                 notes: notes,
                 attachments: {
@@ -606,6 +604,7 @@
                 // إظهار نافذة النجاح
                 document.getElementById('successName').innerText = fullName;
                 document.getElementById('successPhone').innerText = phone;
+                document.getElementById('successJobTitle').innerText = jobTitle;
                 document.getElementById('successGrade').innerText = jobGrade;
                 document.getElementById('successDocsCount').innerText = `${docsCount} من 3 (${docsCount === 3 ? 'مكتمل ✅' : 'مرفوع جزئياً ⚠️'})`;
 
