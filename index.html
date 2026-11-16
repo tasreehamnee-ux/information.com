@@ -317,7 +317,7 @@
                     <!-- Search Box -->
                     <div class="relative flex-grow max-w-lg">
                         <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3.5 text-slate-400"></i>
-                        <input type="text" id="searchInput" onkeyup="applyFilters()" placeholder="ابحث بالاسم، اللقب، الهاتف، مكان العمل، السكن..."
+                        <input type="text" id="searchInput" onkeyup="applyFilters()" placeholder="ابحث بالاسم، اللقب، الهاتف، مكان العمل، العنوان الوظيفي، السكن..."
                             class="w-full bg-slate-50 border border-slate-200 rounded-xl pr-10 pl-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition-all shadow-inner">
                     </div>
 
@@ -386,20 +386,21 @@
                         <thead>
                             <tr class="bg-slate-50/80 text-slate-700 font-bold border-b border-slate-200 text-xs">
                                 <th style="width: 35px;" class="text-center">ت</th>
-                                <th style="width: 20%;">الاسم الثلاثي واللقب</th>
-                                <th style="width: 12%;" class="text-center">رقم الهاتف</th>
-                                <th style="width: 7%;" class="text-center">التولد</th>
-                                <th style="width: 17%;">السكن</th>
-                                <th style="width: 11%;" class="text-center">التحصيل الدراسي</th>
-                                <th style="width: 15%;">مكان العمل</th>
-                                <th style="width: 10%;" class="text-center">الدرجة الوظيفية</th>
-                                <th style="width: 8%;" class="text-center">المستمسكات</th>
+                                <th style="width: 17%;">الاسم الثلاثي واللقب</th>
+                                <th style="width: 11%;" class="text-center">رقم الهاتف</th>
+                                <th style="width: 6%;" class="text-center">التولد</th>
+                                <th style="width: 14%;">السكن</th>
+                                <th style="width: 10%;" class="text-center">التحصيل الدراسي</th>
+                                <th style="width: 12%;">مكان العمل</th>
+                                <th style="width: 11%;" class="text-center">العنوان الوظيفي</th>
+                                <th style="width: 9%;" class="text-center">الدرجة الوظيفية</th>
+                                <th style="width: 7%;" class="text-center">المستمسكات</th>
                                 <th style="width: 80px;" class="text-center action-col">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="employeeTableBody" class="divide-y divide-slate-100">
                             <tr>
-                                <td colspan="10" class="text-center py-10 text-slate-400">
+                                <td colspan="11" class="text-center py-10 text-slate-400">
                                     <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-blue-500 block"></i>
                                     جاري تحميل البيانات من السحابة...
                                 </td>
@@ -551,6 +552,10 @@
                                 <span class="font-bold text-slate-800" id="detailWorkplace"></span>
                             </div>
                             <div class="flex justify-between py-1 border-b border-slate-100">
+                                <span class="text-slate-400 font-medium">العنوان الوظيفي:</span>
+                                <span class="font-bold text-blue-700" id="detailJobTitle"></span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100">
                                 <span class="text-slate-400 font-medium">الدرجة الوظيفية / الصفة:</span>
                                 <span class="font-bold text-purple-700" id="detailJobGrade"></span>
                             </div>
@@ -657,9 +662,15 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1 text-xs">مكان العمل</label>
-                        <input type="text" id="editWorkplace" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1 text-xs">مكان العمل</label>
+                            <input type="text" id="editWorkplace" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1 text-xs">العنوان الوظيفي</label>
+                            <input type="text" id="editJobTitle" required class="w-full border border-slate-300 p-2.5 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
+                        </div>
                     </div>
 
                     <div>
@@ -841,6 +852,7 @@
                     (emp.fullName && emp.fullName.toLowerCase().includes(query)) ||
                     (emp.phone && emp.phone.includes(query)) ||
                     (emp.workplace && emp.workplace.toLowerCase().includes(query)) ||
+                    (emp.jobTitle && emp.jobTitle.toLowerCase().includes(query)) ||
                     (emp.residence && emp.residence.toLowerCase().includes(query)) ||
                     (emp.jobGrade && emp.jobGrade.toLowerCase().includes(query)) ||
                     (emp.qualification && emp.qualification.toLowerCase().includes(query));
@@ -907,6 +919,7 @@
                             </span>
                         </td>
                         <td class="text-xs font-semibold text-slate-800">${emp.workplace || '-'}</td>
+                        <td class="text-center text-xs font-semibold text-blue-800">${emp.jobTitle || '-'}</td>
                         <td class="text-center text-xs font-bold text-slate-700">
                             ${emp.jobGrade || '-'}
                         </td>
@@ -1159,6 +1172,7 @@
             document.getElementById('detailResidence').innerText = emp.residence || '-';
             document.getElementById('detailQualification').innerText = emp.qualification || '-';
             document.getElementById('detailWorkplace').innerText = emp.workplace || '-';
+            document.getElementById('detailJobTitle').innerText = emp.jobTitle || '-';
             document.getElementById('detailJobGrade').innerText = emp.jobGrade || '-';
             document.getElementById('detailCreatedAt').innerText = emp.createdAt ? new Date(emp.createdAt).toLocaleDateString('ar-IQ') : '-';
 
@@ -1262,6 +1276,7 @@
             document.getElementById('editResidence').value = emp.residence || '';
             document.getElementById('editQualification').value = emp.qualification || 'بكالوريوس';
             document.getElementById('editWorkplace').value = emp.workplace || '';
+            document.getElementById('editJobTitle').value = emp.jobTitle || '';
             document.getElementById('editJobGrade').value = emp.jobGrade || 'الدرجة الخامسة';
             document.getElementById('editNotes').value = emp.notes || '';
 
@@ -1287,6 +1302,7 @@
                 residence: document.getElementById('editResidence').value.trim(),
                 qualification: document.getElementById('editQualification').value,
                 workplace: document.getElementById('editWorkplace').value.trim(),
+                jobTitle: document.getElementById('editJobTitle').value.trim(),
                 jobGrade: document.getElementById('editJobGrade').value,
                 notes: document.getElementById('editNotes').value.trim(),
                 updatedAt: new Date().toISOString()
@@ -1364,6 +1380,7 @@
                 "السكن": emp.residence || "",
                 "التحصيل الدراسي": emp.qualification || "",
                 "مكان العمل": emp.workplace || "",
+                "العنوان الوظيفي": emp.jobTitle || "",
                 "الدرجة الوظيفية": emp.jobGrade || "",
                 "البطاقة الموحدة": emp.attachments?.nationalId ? "مرفقة" : "غير مرفقة",
                 "بطاقة السكن": emp.attachments?.residenceCard ? "مرفقة" : "غير مرفقة",
